@@ -14,6 +14,10 @@ class UserTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super(UserTokenObtainPairSerializer, cls).get_token(user)
+        token['is_staff'] = user.is_staff
+
+        user.last_login = timezone.now()
+        user.save()
         return token
 
     def validate(self, attrs):
@@ -131,13 +135,6 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 class LikeSerializer(serializers.ModelSerializer):
-    # music_school = MusicSchoolSerializer(many=False, read_only=True)
-
     class Meta:
         model = Like
         fields = ['id', 'post', 'user']
-
-    # def to_representation(self, instance):
-    #     representation = super(SemesterSerializer, self).to_representation(instance)
-    #     representation['music_school'] = MusicSchoolSerializer(instance.music_school).data
-    #     return representation

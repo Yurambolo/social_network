@@ -57,8 +57,10 @@ class CreatePostView(APIView):
     def post(self, request, format=None):
         try:
             data = request.data
+            if type(data) != dict:
+                data = data.dict()
             data['author_id'] = request.user.id
-            post = PostSerializer().create(request.data)
+            post = PostSerializer().create(data)
             post.save()
             return Response(status=201)
         except Exception as e:

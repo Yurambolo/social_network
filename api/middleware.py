@@ -10,8 +10,8 @@ class LastActivityTraceMiddleware:
     def __call__(self, request):
         response = self.get_response(request)
 
-        user: User = request.user
-        if user.is_authenticated:
+        if request.user.is_authenticated:
+            user = User.objects.filter(id=request.user.id).first()
             user.last_activity = timezone.now()
             user.save()
         return response
